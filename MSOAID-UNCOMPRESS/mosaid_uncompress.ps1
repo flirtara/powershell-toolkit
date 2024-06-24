@@ -76,7 +76,7 @@ ForEach ($file in $zipFiles) {
     { 
         write-host " "
         write-host "Path exists."
-        #Remove-Item $file
+        Remove-Item $file
         #================================================
         # see if screenshots zip exists
         #================================================
