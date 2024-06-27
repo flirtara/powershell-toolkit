@@ -23,7 +23,7 @@ This PowerShell script performs the following tasks:
 ### 2. `GetEvents`
 - Searches for error event log files in the `AADLogs` folder.
 - Allows narrowing down the search by date (optional).
-- Creates output files containing error logs.
+- Creates output files containing errors only from logs.
 
 ## Usage Example
 ```powershell
