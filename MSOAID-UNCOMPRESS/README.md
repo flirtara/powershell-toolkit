@@ -1,42 +1,48 @@
-# MSOAID Zip Processor
+Here's a GitHub README file for your PowerShell script:
 
-This PowerShell script processes MSOAID zip files in the Downloads folder. It uncompresses the zip files, checks for a `Screenshots.zip` file, and processes it if found.
+```markdown
+# PowerShell Script
 
-## Table of Contents
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Installation
-
-1. **Download the Script**: Save the script to your local machine.
-2. **Open PowerShell**: Open PowerShell with administrative privileges.
-3. **Navigate to Script Location**: Use `cd` to navigate to the directory where the script is saved.
+## Description
+This PowerShell script performs the following tasks:
+1. Searches for a `Screenshots.zip` file and processes it.
+2. Searches for error events in the `AADLogs` folder.
 
 ## Usage
+1. Run the script in a PowerShell environment.
+2. Follow the prompts to narrow down the search by date (optional).
+3. The script will create output files containing error logs.
 
-1. **Run the Script**: Execute the script by running `.\scriptname.ps1` in PowerShell.
-2. **Process Zip Files**: The script will automatically:
-   - Navigate to the Downloads folder.
-   - Identify all zip files containing `MSOAID` in their names.
-   - Uncompress each zip file.
-   - Check for a `Screenshots.zip` file within each uncompressed folder.
-   - Uncompress `Screenshots.zip` if it exists and unblock any `.mht` files.
+## Functions
 
-### Example
+### 1. `ScreenShots`
+- Searches for `Screenshots.zip` and processes it.
+- If the `Screenshots` folder exists, it unblocks `.mht` files.
+- Removes the `Screenshots.zip` file.
 
+### 2. `GetEvents`
+- Searches for error event log files in the `AADLogs` folder.
+- Allows narrowing down the search by date (optional).
+- Creates output files containing error logs.
+
+## Usage Example
 ```powershell
-.\MSOAIDZipProcessor.ps1
+# Set the directory where the screenshots and logs are located
+$msoaidDir = "C:\Path\To\Directory"
+
+# Run the ScreenShots function
+ScreenShots -msoaidDir $msoaidDir
+
+# Run the GetEvents function
+GetEvents -msoaidDir $msoaidDir
 ```
 
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request.
+## Requirements
+- PowerShell 5.0 or higher
+- Administrative privileges to access event logs
 
 ## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
 
-This project is licensed under the MIT License.
-
-Feel free to customize this README file further to better suit your project's needs. If you have any additional details or sections you'd like to include, let me know!
+Feel free to customize the README file further to suit your needs! If you need any more help, just let me know.
