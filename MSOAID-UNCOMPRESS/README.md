@@ -5,13 +5,26 @@ Here's a GitHub README file for your PowerShell script:
 
 ## Description
 This PowerShell script performs the following tasks:
-1. Searches for a `Screenshots.zip` file and processes it.
-2. Searches for error events in the `AADLogs` folder.
+1.  Checks for MSOAID zip files in Download folder.
+2.  If data folder doesn't exist in Download folder it creates it.
+3.  If data folder exists delete contents of data folder.
+4.  Searches for a `Screenshots.zip` file and if exists unzip and unblock file for viewing images.
+5.  Searches for events log files in the `AADLogs` directory.
+6.  Conversts all event log files to excel files with a subset of columns for data.
+7.  Saves all new event log excel files in data directory.
+8.  Copies all text files in AADLogs folder to data directory.
 
-## Usage
-1. Run the script in a PowerShell environment.
-2. Follow the prompts to narrow down the search by date (optional).
-3. The script will create output files containing error logs.
+## Usage Example:
+1. Launch Windows PowerShell as an Administrator, and wait for the PS> prompt to appear
+2. Navigate within PowerShell to the directory where the script lives:
+      PS> cd C:\my_path\yada_yada\ (enter)
+3. Execute the script:
+      PS> .\msoaid_uncompress.ps1 (enter)
+
+Or: you can run the PowerShell script from the Command Prompt (cmd.exe) like this:
+
+      powershell -noexit "& ""C:\my_path\yada_yada\msoaid_uncompress.ps1""" (enter)
+
 
 ## Functions
 
@@ -22,24 +35,16 @@ This PowerShell script performs the following tasks:
 
 ### 2. `GetEvents`
 - Searches for error event log files in the `AADLogs` folder.
-- Allows narrowing down the search by date (optional).
-- Creates output files containing errors only from logs.
+- Converts each event log file to an excel file.
+- Only saves a subset of columns in the output file.
 
-## Usage Example
-```powershell
-# Set the directory where the screenshots and logs are located
-$msoaidDir = "C:\Path\To\Directory"
-
-# Run the ScreenShots function
-ScreenShots -msoaidDir $msoaidDir
-
-# Run the GetEvents function
-GetEvents -msoaidDir $msoaidDir
-```
+## Configuration Items you may want to change.
+Path where MSOAID zip files are locate:  Line 4:  $downloadsPath = (New-Object -ComObject Shell.Application).Namespace('shell:Downloads').Self.Path
+Path where  text files are copies and excel files saved:  Line 7:  $extract_path = $downloadsPath + "\data\"
+Columns that are pulled and saved in the Excel File:  Line 111: Select-Object 'TimeCreated', 'RecordId', 'MachineName', 'UserId', 'TaskDisplayName', 'LevelDisplayName', 'Message' 
 
 ## Requirements
 - PowerShell 5.0 or higher
-- Administrative privileges to access event logs
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
