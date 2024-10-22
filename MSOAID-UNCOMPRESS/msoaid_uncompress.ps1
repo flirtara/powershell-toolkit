@@ -7,6 +7,14 @@ cd -Path $downloadsPath
 $extract_path = $downloadsPath + "\data\"
 
 #================================================
+# check if data directory exists
+#================================================
+If(!(test-path -PathType container $extract_path))
+{
+    New-Item -ItemType Directory -Path $extract_path
+}
+
+#================================================
 # search for screenshot zip and process 
 #================================================
 function ScreenShots {
