@@ -2,9 +2,9 @@
 # global variables
 #================================================
 $downloadsPath = (New-Object -ComObject Shell.Application).Namespace('shell:Downloads').Self.Path
-Write-Host $downloadsPath
-#$downloadFolder = "C:\Users\v-kreddick\Downloads"
+write-host $downloadsPath
 cd -Path $downloadsPath
+$extract_path = $downloadsPath + "\data\"
 
 #================================================
 # search for screenshot zip and process 
@@ -14,7 +14,7 @@ function ScreenShots {
         $msoaidDir 
     )
     write-Host " "
-    Write-Host "Running Function Screenshots.."
+    Write-Host "Checking for Screenshots zip file..."
     cd -Path $msoaidDir
     if (Test-Path "Screenshots.zip")
     { 
@@ -50,14 +50,14 @@ function ScreenShots {
     cd -Path $downloadsPath
 }
 #================================================
-# search for error events
+# convert event logs to csv
 #================================================
 function GetEvents {
     param (
         $msoaidDir 
     )
-    write-Host " "
-    Write-Host "Running Function GetEvents.."
+    write-host " "
+    Write-host "Running Function GetEvents.."
     cd -Path $msoaidDir
     cd -Path "AADLogs"
 
@@ -65,76 +65,62 @@ function GetEvents {
     # get list of event log files
     #================================================
     $eventFiles = @(Get-ChildItem -File -Name -Filter *.evtx)
+    $textFiles = @(Get-ChildItem -File -Name -Filter *.txt)
 
-    Write-Host "----------------------------------------------------------"
-    Write-Host " "
-
-    #================================================
-    # get date frame to pull errors for
-    #================================================
-    $getDate = Read-Host -Prompt "Do you want to narrow by date? [Y/n] "
-    if($getDate -eq "Y" -or $getDate -eq "y")
+    write-host "----------------------------------------------------------"
+    write-host "Moving Text Files from AADLogs folder..."
+    
+    ForEach ($file in $textFiles)
     {
-        Write-Host " "
-        $startDate = Read-Host -Prompt "Enter Start Date [ 6/18/2024 ] "
-        Write-Host " "
-        $stopDate = Read-Host -Prompt "Enter Stop Date [ 6/18/2024 ] "
-        Write-Host " "
+        cp $file $extract_path
     }
     #================================================
-    # process each file
+    # process each event log file
+    #================================================
+
+    write-host "----------------------------------------------------------"
+    write-host "Converting Event Logs from AADLogs folder into CSV Files..."
+ 
+    #================================================
+    # process each event log file
     #================================================
     ForEach ($file in $eventFiles)
     {
-        Write-Host "-------------------------------------------------"
+        write-host "-------------------------------------------------"
         #================================================
         # create output filename
         #================================================
-        $outputFile = $file -replace '.evtx', '.txt'
-
+        $outputFile = $file -replace '.evtx', '.csv'
+        $source_path = $downloadsPath + "\" + $msoaidDir + "\AADLogs\" + $file
+        $target_path = $extract_path + $outputFile
+        write-host "source_path:  $source_path"
+        write-host "target_path:  $target_path"
+        
         #================================================
-        # pull errors and put in output file
+        # convert to csv
         #================================================
-        Write-Host "Pulling Errors and Saving in $outputFile..."
-        if ($StartDate)
-        {
-            try 
-            { 
-                Get-WinEvent -FilterHashTable @{ Path=$file;Level=2;StartTime=$startDate;EndTime=$stopDate } -ErrorAction Stop > $outputFile
-            }
-            catch 
-            {
-                if ($_.Exception -match "No events were found that match the specified selection criteria")
-                {
-                    Write-Host "No events found";
-                }
-            }
-        }
-        else
-        {
-             try 
-            { 
-                Get-WinEvent -FilterHashTable @{ Path=$file;Level=2 } -ErrorAction Stop > $outputFile 
-            }
-            catch 
-            {
-                if ($_.Exception -match "No events were found that match the specified selection criteria.") 
-                {
-                    Write-Host "No events found";
-                }
-            } 
-        }
+        $events = Get-WinEvent -Path $source_path 
+        $events | Select-Object 'TimeCreated', 'RecordId', 'MachineName', 'UserId', 'TaskDisplayName', 'LevelDisplayName', 'Message' | Export-Excel -Path $target_path -AutoSize -WorksheetName "Sheet1" -FreezeTopRow -TableStyle Light1
     }
-    cd -Path $downloadsPath
 }
-
 #================================================
 # Main Program
 #================================================
 
 #================================================
+# delete data directory
+#================================================
+write-host " "
+write-host " "
+write-host "Deleting files in Downloads\data folder..."
+Get-ChildItem -Path $extract_path -Include *.* -File -Recurse | foreach { $_.Delete()}
+
+
+#================================================
 # get list of msoaid zip files
 #================================================
+write-host " "
+write-host "Getting list of MSOAID zip files"
 $zipFiles = @(Get-ChildItem -File -Filter *MSOAID*.zip)
 
 #================================================
@@ -142,23 +128,24 @@ $zipFiles = @(Get-ChildItem -File -Filter *MSOAID*.zip)
 #================================================
 ForEach ($file in $zipFiles) {
     $folderName = $file -replace '.zip'
-    write-Host " "
-    write-Host " "
-    Write-Host "=================================================="
-    Write-Host "Uncompressing: $($file.Name).."
-    Write-Host "=================================================="
+    write-host " "
+    write-host " "
+    write-host "=================================================="
+    write-host "Uncompressing: $($file.Name).."
+    write-host "=================================================="
     Expand-Archive -Path $file -Force
     
     #================================================
     # verify zip was decompressed
     #================================================
     write-host " "
-    Write-Host "Verifying $folderName.."
+    write-host "Verifying $folderName was created..."
     if (Test-Path $folderName)
     { 
         write-host " "
-        write-host "Path exists."
-        #Remove-Item $file
+        write-host "$folderName exists."
+        write-host "removing zip file..."
+        Remove-Item $file
         #================================================
         # see if screenshots zip exists
         #================================================
@@ -166,7 +153,6 @@ ForEach ($file in $zipFiles) {
         #================================================
         # pull errors from event logs
         #================================================
-        Write-Host "Got Here!"
         GetEvents $foldername
     } 
     else 
