@@ -4,15 +4,6 @@
 $downloadsPath = (New-Object -ComObject Shell.Application).Namespace('shell:Downloads').Self.Path
 write-host $downloadsPath
 cd -Path $downloadsPath
-$extract_path = $downloadsPath + "\data\"
-
-#================================================
-# check if data directory exists
-#================================================
-If(!(test-path -PathType container $extract_path))
-{
-    New-Item -ItemType Directory -Path $extract_path
-}
 
 #================================================
 # search for screenshot zip and process 
@@ -64,10 +55,21 @@ function GetEvents {
     param (
         $msoaidDir 
     )
+    write-host "msoaidDir:  $msoaidDir"
     write-host " "
     Write-host "Running Function GetEvents.."
     cd -Path $msoaidDir
     cd -Path "AADLogs"
+    $extract_path = $downloadsPath + "\" + $msoaidDir + "\Data\"
+    write-host "extract_path: $extract_path" 
+   
+    #================================================
+    # check if data directory exists
+    #================================================
+    If(!(test-path -PathType container $extract_path))
+    {
+        New-Item -ItemType Directory -Path $extract_path
+    }
 
     #================================================
     # get list of event log files
@@ -116,15 +118,6 @@ function GetEvents {
 #================================================
 
 #================================================
-# delete data directory
-#================================================
-write-host " "
-write-host " "
-write-host "Deleting files in Downloads\data folder..."
-Get-ChildItem -Path $extract_path -Include *.* -File -Recurse | foreach { $_.Delete()}
-
-
-#================================================
 # get list of msoaid zip files
 #================================================
 write-host " "
@@ -153,7 +146,7 @@ ForEach ($file in $zipFiles) {
         write-host " "
         write-host "$folderName exists."
         write-host "removing zip file..."
-        Remove-Item $file
+        #Remove-Item $file
         #================================================
         # see if screenshots zip exists
         #================================================

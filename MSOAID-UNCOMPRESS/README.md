@@ -6,13 +6,12 @@ Here's a GitHub README file for your PowerShell script:
 ## Description
 This PowerShell script performs the following tasks:
 1.  Checks for MSOAID zip files in Download folder.
-2.  If data folder doesn't exist in Download folder it creates it.
-3.  If data folder exists delete contents of data folder.
-4.  Searches for a `Screenshots.zip` file and if exists unzip and unblock file for viewing images.
-5.  Searches for events log files in the `AADLogs` directory.
-6.  Conversts all event log files to excel files with a subset of columns for data.
-7.  Saves all new event log excel files in data directory.
-8.  Copies all text files in AADLogs folder to data directory.
+2.  If Data folder doesn't exist in MSOAID EXTRACT Parent folder it creates it.
+3.  Searches for a `Screenshots.zip` file and if exists unzip and unblock file for viewing images.
+4.  Searches for events log files in the `AADLogs` directory.
+5.  Conversts all event log files to excel files with a subset of columns for data.
+6.  Saves all new event log excel files in Data directory.
+8.  Copies all text files in AADLogs folder to Data directory.
 
 ## Usage Example:
 1. Launch Windows PowerShell as an Administrator, and wait for the PS> prompt to appear
@@ -40,7 +39,6 @@ Or: you can run the PowerShell script from the Command Prompt (cmd.exe) like thi
 
 ## Configuration Items you may want to change.
 Path where MSOAID zip files are locate:  Line 4:  $downloadsPath = (New-Object -ComObject Shell.Application).Namespace('shell:Downloads').Self.Path
-Path where  text files are copies and excel files saved:  Line 7:  $extract_path = $downloadsPath + "\data\"
 Columns that are pulled and saved in the Excel File:  Line 111: Select-Object 'TimeCreated', 'RecordId', 'MachineName', 'UserId', 'TaskDisplayName', 'LevelDisplayName', 'Message' 
 
 ## Requirements
