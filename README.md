@@ -1,9 +1,9 @@
 Sure, here's a concise example of a `README.md` file for your repository of PowerShell scripts:
 
 ```markdown
-# PowerShell Scripts Repository
+# PowerShell Toolkit Repository
 
-Welcome to the PowerShell Scripts Repository! This repository contains various PowerShell scripts organized into different folders based on their functionality.
+Welcome to the PowerShell Toolkit Repository! This repository contains various PowerShell scripts organized into different folders based on their functionality.
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@ This repository is a collection of PowerShell scripts designed to automate and s
 The repository is structured as follows:
 
 ```
-PowerShell-Scripts/
+PowerShell-Toolkit/
 │
 ├── Folder1/
 │   ├── Script1.ps1
