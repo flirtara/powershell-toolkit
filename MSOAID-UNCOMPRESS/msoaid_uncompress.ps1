@@ -100,17 +100,17 @@ function GetEvents {
         #================================================
         # create output filename
         #================================================
-        $outputFile = $file -replace '.evtx', '.csv'
+        $outputFile = $file -replace '.evtx', '.xlsx'
         $source_path = $downloadsPath + "\" + $msoaidDir + "\AADLogs\" + $file
         $target_path = $extract_path + $outputFile
         write-host "source_path:  $source_path"
         write-host "target_path:  $target_path"
         
         #================================================
-        # convert to csv
+        # convert to excel
         #================================================
         $events = Get-WinEvent -Path $source_path 
-        $events | Select-Object 'TimeCreated', 'RecordId', 'MachineName', 'UserId', 'TaskDisplayName', 'LevelDisplayName', 'Message' | Export-Excel -Path $target_path -AutoSize -WorksheetName "Sheet1" -FreezeTopRow -TableStyle Light1
+        $events | Select-Object 'TimeCreated', 'RecordId', 'MachineName', 'UserId', 'TaskDisplayName', 'LevelDisplayName', 'Message' | Export-Excel -Path $target_path  -AutoSize -WorksheetName "Sheet1" -FreezeTopRow -TableStyle Light1
     }
 }
 #================================================

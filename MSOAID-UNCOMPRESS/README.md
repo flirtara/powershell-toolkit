@@ -1,6 +1,3 @@
-Here's a GitHub README file for your PowerShell script:
-
-```markdown
 # PowerShell Script
 
 ## Description
